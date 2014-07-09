@@ -1,0 +1,45 @@
+#!/usr/bin/env ruby
+
+dir = File.dirname(File.absolute_path(__FILE__))
+
+# Require the libraries
+require 'mm'
+require 'mm/space'
+
+# List of allowed intra-intervals
+tuneable = MM::Ratio.from_yaml(File.read(dir + "/tuneable.yml"))
+# The "central morph" to start from
+start_morph = MM::Ratio.from_yaml(File.read(dir + "/start_morph.yml"))
+# Initialize a couple of MM::Metrics
+x = MM::Metric.olm intra_delta: :tenney, inter_delta: :abs
+y = MM::Metric.olm intra_delta: :log_ratio, inter_delta: :abs
+metrics = [x, y]
+
+# Set a variable for the boundaries in either dimension
+lowest = MM::Ratio.from_yaml(File.read(dir + "/lowest_morph.yml"))
+x_highest = MM::Ratio.from_yaml(File.read(dir + "/x_highest.yml"))
+y_highest = MM::Ratio.from_yaml(File.read(dir + "/y_highest.yml"))
+boundaries = [[lowest, x_highest], [lowest, y_highest]]
+
+# Initialize the space
+space = MM::Space.new metrics
+space.boundaries = boundaries
+space.delta = 0.05
+
+# A point is adjacent to the current point iff every element in its vector is
+# identical to the current point except for one. Returns an Array of all
+# adjacent points.
+space.adjacent_points_function = ->(current_point) {
+  (0...current_point.size-1).to_a.product(tuneable).inject([]) {|memo, index_interval|
+    memo << MM::Ratio.change_interval(current_point, *index_interval)
+  }
+}
+
+# Enter the space
+finale = space.enter :start => start_morph do |s|
+  # Find the requested morph
+  morph start, to: [ARGV[1].to_f, ARGV[2].to_f]
+end
+# Print the result
+print finale.join(", ") + "\n"
+

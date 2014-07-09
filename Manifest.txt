@@ -1,0 +1,8 @@
+.autotest
+History.txt
+Manifest.txt
+README.txt
+Rakefile
+bin/phases/of/this/difference
+lib/phases/of/this/difference.rb
+test/test_phases/of/this/difference.rb
