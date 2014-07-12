@@ -14,10 +14,11 @@ require "hoe"
 
 Hoe.spec "phases-of-this-difference" do
   developer("Andrew Smith", "andrewchristophersmith@gmail.com")
+  self.version = "0.0.0"
 
   # self.group_name = "phases-of-this-difference" # if part of an organization/group
 
-  # license "MIT" # this should match the license in the README
+  license "MIT" # this should match the license in the README
 end
 
 # vim: syntax=ruby

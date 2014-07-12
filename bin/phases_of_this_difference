@@ -30,8 +30,10 @@ space.delta = 0.05
 # identical to the current point except for one. Returns an Array of all
 # adjacent points.
 space.adjacent_points_function = ->(current_point) {
-  (0...current_point.size-1).to_a.product(tuneable).inject([]) {|memo, index_interval|
-    memo << MM::Ratio.change_interval(current_point, *index_interval)
+  (0...current_point.size-1).to_a
+    .product(tuneable)
+    .inject([]) {|memo, index_interval|
+      memo << MM::Ratio.change_interval(current_point, *index_interval)
   }
 }
 
