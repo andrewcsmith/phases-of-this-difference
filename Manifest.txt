@@ -3,6 +3,13 @@ History.txt
 Manifest.txt
 README.txt
 Rakefile
-bin/phases/of/this/difference
-lib/phases/of/this/difference.rb
-test/test_phases/of/this/difference.rb
+bin/lowest_morph.yml
+bin/phases_of_this_difference
+bin/start_morph.yml
+bin/tuneable.yml
+bin/x_highest.yml
+bin/y_highest.yml
+lib/phases_search.rb
+lib/phases_space.rb
+test/test_phases_search.rb
+test/test_phases_space.rb
