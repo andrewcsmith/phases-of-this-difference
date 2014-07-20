@@ -21,7 +21,7 @@ class PhasesSpace < MM::Space
     to = normalize_distance start_morph, to
     search.cost_function = cost_function start_morph, to
     search.delta = @delta
-    search.find
+    get_lowest_old start_morph, search.find
   end
 
   def lowest_point length
@@ -51,6 +51,22 @@ class PhasesSpace < MM::Space
       edge = select_edge(x[1], x[2])
       x[0].call(starting_point, edge) * x[2]
     }
+  end
+
+  # Find the arrangement of intervals that leads to the morph whose contour is
+  # most similar to the starting morph, judged by the OLD.
+  def get_lowest_old starting_point, ending_point
+    # Find every combination of reciprocals
+    combos = [false, true].repeated_permutation(starting_point.length-1)
+    combos.map {|c|
+      c.each_index.inject(ending_point) {|memo, i|
+        memo = c[i] ? MM::Ratio.change_interval(memo, i, :reciprocal) : memo
+      }
+    }.reject {|c|
+      c.any? {|x| x.to_f > 16.0 || x.to_f < 0.666}
+    }.sort_by {|c|
+      MM::Metric.old.call(starting_point, c)
+    }.first
   end
 
   private

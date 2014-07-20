@@ -76,5 +76,11 @@ class TestPhasesSpace < Minitest::Test
   def test_selects_correct_edge
     assert_equal "you", @ps.send(:select_edge, ["you", "me"], -0.4)
   end
+
+  def test_gets_lowest_old
+    starting_point = MM::Ratio.from_s("1/1 3/2 6/5")
+    ending_point = MM::Ratio.from_s("1/1 2/3 4/9")
+    assert_equal MM::Ratio.from_s("1/1 3/2 1/1"), @ps.get_lowest_old(starting_point, ending_point)
+  end
 end
 
