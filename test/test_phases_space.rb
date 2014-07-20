@@ -58,7 +58,7 @@ class TestPhasesSpace < Minitest::Test
     input = [0.5, 0.5]
     output = [0.100, 0.112]
     output.zip(@ps.normalize_distance(starting_point, input)).each do |x|
-      assert_in_delta *x
+      assert_in_delta(*x)
     end
   end
 
@@ -66,10 +66,10 @@ class TestPhasesSpace < Minitest::Test
     starting_point = MM::Ratio.from_s("1/1 3/2 6/5")
     input = [-0.5, -0.5]
     @ps.metric[0].stub :call, 1.5 do
-      assert_in_delta -0.75, @ps.normalize_distance(starting_point, input)[0]
+      assert_in_delta(-0.75, @ps.normalize_distance(starting_point, input)[0])
     end
     @ps.metric[1].stub :call, 0.8 do
-      assert_in_delta -0.4, @ps.normalize_distance(starting_point, input)[1]
+      assert_in_delta(-0.4, @ps.normalize_distance(starting_point, input)[1])
     end
   end
 

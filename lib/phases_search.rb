@@ -10,7 +10,7 @@ class PhasesSearch < MM::Search
 
   attr_accessor :current_point, :tuneable
 
-  def get_adjacent_points
+  def get_adjacent_points *args
     (0...@current_point.size-1).to_a
       .product(@tuneable) # Every index with every interval
       .inject([]) { |memo, index_interval|

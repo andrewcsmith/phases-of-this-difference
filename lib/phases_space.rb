@@ -1,4 +1,5 @@
 require 'mm/space'
+require 'phases_search'
 
 class PhasesSpace < MM::Space
   def initialize tuneable
@@ -7,11 +8,21 @@ class PhasesSpace < MM::Space
     @metric = [x, y]
     super @metric
     self.tuneable = tuneable
-    b = infer_boundaries
-    self.boundaries = b
+    self.boundaries = infer_boundaries 
   end
 
   attr_reader :tuneable
+
+  def morph start_morph, to: nil 
+    search = PhasesSearch.new start_morph, @tuneable
+    # Reset the boundaries to the length of the start morph
+    self.boundaries = infer_boundaries(start_morph.length)
+    # Normalize the distance to between 0.0 and 1.0
+    to = normalize_distance start_morph, to
+    search.cost_function = cost_function start_morph, to
+    search.delta = @delta
+    search.find
+  end
 
   def lowest_point length
     1.upto(length).map { MM::Ratio.new(1,1) }
