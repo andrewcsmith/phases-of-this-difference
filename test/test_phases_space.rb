@@ -31,6 +31,11 @@ class TestPhasesSpace < Minitest::Test
     assert_equal exp, @ps.boundaries[1][1]
   end
 
+  def test_phases_space_infers_upper_boundary_hd_with_args
+    exp = MM::Ratio.from_s("1/1 4/5 1/1")
+    assert_equal exp, @ps.send(:infer_boundaries, 3)[0][1]
+  end
+
   def test_tuneable_initializes_with_array
     @ps = PhasesSpace.new MM::Ratio.from_s(%w(3/2 6/5))
     assert_equal MM::Ratio.from_s(%w(3/2 6/5)), @ps.tuneable
@@ -48,10 +53,28 @@ class TestPhasesSpace < Minitest::Test
     tuneable_file.verify
   end
 
-  def test_scales_both_sides_of_starting_point
+  def test_normalizes_distance_positive
+    starting_point = MM::Ratio.from_s("1/1 3/2 6/5")
+    input = [0.5, 0.5]
+    output = [0.100, 0.112]
+    output.zip(@ps.normalize_distance(starting_point, input)).each do |x|
+      assert_in_delta *x
+    end
   end
 
-  def test_properly_polarizes_directions
+  def test_normalizes_distance_negative
+    starting_point = MM::Ratio.from_s("1/1 3/2 6/5")
+    input = [-0.5, -0.5]
+    @ps.metric[0].stub :call, 1.5 do
+      assert_in_delta -0.75, @ps.normalize_distance(starting_point, input)[0]
+    end
+    @ps.metric[1].stub :call, 0.8 do
+      assert_in_delta -0.4, @ps.normalize_distance(starting_point, input)[1]
+    end
+  end
+
+  def test_selects_correct_edge
+    assert_equal "you", @ps.send(:select_edge, ["you", "me"], -0.4)
   end
 end
 
