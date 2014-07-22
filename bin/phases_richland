@@ -1,7 +1,9 @@
 #!/usr/bin/env ruby
 
 dir = File.dirname(File.absolute_path(__FILE__))
-to = [ARGV[0].to_f, ARGV[1].to_f]
+latitude = 46.2797
+longitude = -119.2814
+# longitude = -73.952222
 
 require 'phases_space'
 require 'prime'
@@ -21,14 +23,21 @@ tuneable.reject! {|t|
 start_morph = MM::Ratio.from_yaml(File.read(dir + "/../data/start_morph.yml"))
 
 space = PhasesSpace.new tuneable
-space.delta = 0.05
+space.delta = 0.03
+
+step = latitude / 90.0 / 14.0
+angle = (longitude / 180.0) * Math::PI
 
 # Enter the space
-finale = space.enter :start => start_morph, :to => to do |s|
-  # Find the requested morph
-  morph start, to: to
+space.enter :start => start_morph, :step => step, :angle => angle do |s|
+  b = ->(i) {
+    distance = step * i
+    to = [Math.sin(angle) * distance, Math.cos(angle) * distance]
+    res = morph start_morph, to: to
+    print "to: #{to}\n" + res.join(", ") + "\n"
+    res
+  }
+  (1..14).to_a.reverse.map(&b)
+  (-14..-1).to_a.reverse.map(&b)
 end
-
-# Print the result
-print finale.join(", ") + "\n"
 
