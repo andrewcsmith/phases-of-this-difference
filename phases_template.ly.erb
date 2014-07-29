@@ -1,0 +1,66 @@
+\include "./HE Font/helmholtz-ellis-v3.ly"
+
+\version "2.16.1"
+
+\header {
+  title = "Topology (phases of this difference), Richland"
+  composer = "Andrew Christopher Smith"
+  tagline = ""
+}
+
+violinOne = \new Staff { \new Voice = "violinOneVoice" {
+  % Header information
+  \override Staff.TimeSignature #'transparent = ##t
+  \override Staff.StaffSymbol #'ledger-line-thickness = #'(1 . 0.05)
+	\override Score.SpacingSpanner #'strict-note-spacing = ##t
+	\override NoteHead #'duration-log = #1
+	\override Rest #'transparent = ##t
+	
+  <%= vector_strings.map(&:first).join(" |\n  ") %> |
+} }
+
+violinTwo = \new Staff { \new Voice = "violinTwoVoice" {
+  % Header information
+  \override Staff.TimeSignature #'transparent = ##t
+  \override Staff.StaffSymbol #'ledger-line-thickness = #'(1 . 0.05)
+	\override Score.SpacingSpanner #'strict-note-spacing = ##t
+	\override NoteHead #'duration-log = #1
+	\override Rest #'transparent = ##t
+
+  <%= vector_strings.map(&:last).join(" |\n  ") %> |
+} }
+
+\score {
+  \new StaffGroup <<
+    \violinOne
+    \violinTwo
+  >>
+
+  \layout {
+    \context {
+      \Score
+      proportionalNotationDuration = #(ly:make-moment 1 4)
+      \override StaffGrouper #'staff-staff-spacing #'minimum-distance = #35
+    }
+    \context {
+      \Voice
+    }
+    \context {
+      \Staff
+      \remove "Time_signature_engraver"
+    }
+  }
+}
+
+\paper {
+  ragged-right = ##t
+  #(set-paper-size "11x17" 'portrait)
+  indent = 0\cm
+  #(define fonts
+    (make-pango-font-tree "OFL Sorts Mill Goudy"
+                          "Nimus Sans"
+                          "Luxi Mono"
+                          1))
+}
+
+

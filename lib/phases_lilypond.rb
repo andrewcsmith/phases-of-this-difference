@@ -18,4 +18,9 @@ class PhasesLilypond < MM::Lilypond
     }.join(' ')
     [violin_1, violin_2]
   end
+
+  def render b
+    output = ERB.new @template
+    output.result(b)
+  end
 end
