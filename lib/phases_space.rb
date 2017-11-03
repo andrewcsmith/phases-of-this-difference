@@ -25,7 +25,7 @@ class PhasesSpace < MM::Space
   end
 
   def lowest_point length
-    1.upto(length).map { MM::Ratio.new(1,1) }
+    length.times.map { MM::Ratio.new(1,1) }
   end
 
   def tuneable= tuneable
